@@ -1,7 +1,5 @@
 import java.util.*;
 
-enum Direction {CLOCK, COUNTER}
-
 public class UNOGamePlay {
   ArrayList<UNOPlayer> players = new ArrayList<UNOPlayer>();
   CardDealer dealer;
@@ -9,13 +7,12 @@ public class UNOGamePlay {
   UNOCard pile;
   int numOfPlayers;
   boolean skip = false;
-  Direction dir = Direction.CLOCK;
+  boolean dir = true;
   int minNumOfCardToDraw = 0;
   
   int currentPlayerID = 0;
   
   UNOGamePlay(int numOfPlayers) {
-    // TODO initialize
     this.numOfPlayers = numOfPlayers;
     dealer = new CardDealer(3);
     for (int i=0; i<numOfPlayers; i++) {
@@ -25,17 +22,24 @@ public class UNOGamePlay {
   }
   
   public boolean checkCard(UNOCard card) {
-    // TODO check whether the card can be put on pile
+    if (card.color == UNOColor.BLACK) return true;
+    
+    if (card.color == pile.color) return true;
+    
+    if (card.cardNumber == pile.cardNumber) return true;
+    
     return false;
   }
   
   public boolean checkUNO() {
-    // TODO return UNO situation
+    for (UNOPlayer plyr : players) {
+      if (plyr.getNumOfCard() <= 1) return true;
+    }
     return false;
   }
   
   public int nextPlayer() {
-    int di = (dir == Direction.CLOCK) ? 1 : -1;
+    int di = dir ? 1 : -1;
     if (skip) {
       skip = false;
       return (currentPlayerID + 2 * di) % players.size();
@@ -101,6 +105,29 @@ public class UNOGamePlay {
   }
   
   public void updateStatus() {
-    
+    // Check if the pile is skip
+    switch (pile.action) {
+    case SKIP: {
+      skip = true;
+      break;
+    }
+    case DRAW_2: {
+      minNumOfCardToDraw = 2;
+      break;
+    }
+    case WILD_DRAW_4: {
+      minNumOfCardToDraw = 4;
+      break;
+    }
+    case REVERSE: {
+      dir = !dir;
+      break;
+    }
+    case WILD: {
+      // TODO propose user to input a color
+      break;
+    }
+    default: break;
+    }
   }
 }
