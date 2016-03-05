@@ -22,6 +22,7 @@ public class UNOServer implements Runnable {
   private int numOfPlayers;
   
   private ArrayList<PlayerSock> playerSockets = new ArrayList<PlayerSock>();
+  private ArrayList<UNOPlayer> players = new ArrayList<UNOPlayer>();
   
   private int port;
   
@@ -34,8 +35,11 @@ public class UNOServer implements Runnable {
     try {
       unoServerSock = new ServerSocket(port);
       for (int i=0; i<numOfPlayers; i++) {
+        System.out.println("Waiting for Player " + (i+1) + "...");
         PlayerSock ps = new PlayerSock(unoServerSock.accept());
+        System.out.println("Player " + (i+1) + " is online!");
         playerSockets.add(ps);
+        players.add(new UNOPlayer(ps));
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -46,7 +50,9 @@ public class UNOServer implements Runnable {
   public void run() {
     initSocket();
     
+    UNOGamePlay test = new UNOGamePlay(players);
     
+    while (true) test.playATurn();
   }
   
   public static void main(String[] args) {

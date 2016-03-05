@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.*;
 
 public class UNOPlayer {
@@ -5,8 +6,6 @@ public class UNOPlayer {
   CardDealer dealer;
   
   UNOServer.PlayerSock sock;
-  
-  Scanner scnr = new Scanner(System.in);
   
   public void setDealer(CardDealer dl) {
     this.dealer = dl;
@@ -27,9 +26,6 @@ public class UNOPlayer {
     return hand.size();
   }
   
-  public void pressUNO() {
-    
-  }
   
   public void addCard(UNOCard card) {
     hand.add(card);
@@ -43,14 +39,51 @@ public class UNOPlayer {
     return hand.get(index);
   }
   
+  public void forceDraw(int num) {
+    for (int i=0; i<num; i++) {
+      hand.add(dealer.drawCard());
+    }
+  }
+  
   public int proposeCard() {
-    // TODO implement
-    System.out.println("Currently you have:");
-    System.out.println(hand);
+    // Propose the card over the network
+    UNOMessage msg = new UNOMessage();
+    UNOMessage rpy = new UNOMessage();
+    msg.infoLine = "Please select a card";
+    msg.type = MessageType.PROPOSE;
     
+    try {
+      sock.outStream.writeObject(msg);
+      rpy = (UNOMessage) sock.inStream.readObject();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    }
     
-    int index = scnr.nextInt();
+    int index = rpy.proposedCard;
+    
+    System.out.println("Player reply " + index);
+    
     return index;
+  }
+
+  public void broadCastHand(UNOCard pile, ArrayList<Integer> counts) {
+    UNOMessage msg = new UNOMessage();
+    msg.playerHand.addAll(hand);
+    msg.pile = pile;
+    msg.playerCount = new ArrayList<Integer>();
+    msg.playerCount.addAll(counts);
+    msg.type = MessageType.BROADCAST;
+    
+    try {
+      sock.outStream.writeObject(msg);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    System.out.println("Hand Broadcasted!");
+    
   }
   
   public void sortHand() {

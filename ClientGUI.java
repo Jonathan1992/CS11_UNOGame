@@ -11,12 +11,12 @@
  import javafx.stage.PopupWindow;
  import java.util.ArrayList;
  
- public UnoCard pile;
- public ArrayList<UnoCard> hand;
-
-
+ 
 public class ClientGUI extends Application {
 
+  public UNOCard pile;
+  public ArrayList<UNOCard> hand;
+  
 	HBox handBox = new HBox(5);
 	
 	public void start(Stage primaryStage) {
@@ -32,10 +32,10 @@ public class ClientGUI extends Application {
 		return 0;
 	}
 	
-	public String getFileName(UnoCard card) {
+	public String getFileName(UNOCard card) {
 		String col = card.color.name();
 		String act = card.action.name();
-		String num = Integer.toString(card.number);
+		String num = Integer.toString(card.cardNumber);
 		String fileName = col + act + num;
 		return fileName;
 	}

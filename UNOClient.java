@@ -30,23 +30,35 @@ public class UNOClient implements Runnable {
   public void run() {
     // TODO Auto-generated method stub
     try {
-      socket = new Socket("localhost", port);
+      socket = new Socket("146.148.77.57", port);
       outputStream = new ObjectOutputStream(socket.getOutputStream());
       inputStream = new ObjectInputStream(socket.getInputStream());
       
-      UNOMessage wt = (UNOMessage) inputStream.readObject();
-      
-      Scanner scnr = new Scanner(System.in);
-      int num = scnr.nextInt();
-      
-      
-      UNOMessage msg = new UNOMessage();
-      msg.testContent.add(new UNOCard(UNOColor.BLUE, ActionCard.REVERSE, num));
-      
-      outputStream.writeObject(msg);
-      
-      System.out.println("Message sent");
-      
+      while (true) {
+        UNOMessage wt = (UNOMessage) inputStream.readObject();
+        
+        if (wt.type == MessageType.BROADCAST) {
+          System.out.println("Hand info updated!");
+          System.out.println("Pile: " + wt.pile);
+          System.out.println(wt.playerCount);
+          System.out.println(wt.playerHand);
+        } else if (wt.type == MessageType.PROPOSE) {
+          System.out.println(wt.infoLine);
+          Scanner scnr = new Scanner(System.in);
+          int num = scnr.nextInt();
+          
+          UNOMessage msg = new UNOMessage();
+          msg.type = MessageType.REPLY;
+          msg.proposedCard = num;
+          
+          outputStream.writeObject(msg);
+          
+          System.out.println("Message sent");
+        } else {
+          
+        }
+        
+      }
     } catch (SocketException se) {
       se.printStackTrace();
     } catch (UnknownHostException e) {
