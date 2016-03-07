@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.util.*;
 
-enum MessageType {BROADCAST, PROPOSE, REPLY}
+enum MessageType {BROADCAST, PROPOSE, REPLY, RESULT}
 
 public class UNOMessage implements Serializable {
   private static final long serialVersionUID = 1L;

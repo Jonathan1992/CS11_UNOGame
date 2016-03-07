@@ -52,7 +52,7 @@ public class UNOServer implements Runnable {
     
     UNOGamePlay test = new UNOGamePlay(players);
     
-    while (true) test.playATurn();
+    while (test.playATurn()) {}
   }
   
   public static void main(String[] args) {

@@ -51,6 +51,16 @@ public class UNOClient implements Runnable {
           msg.type = MessageType.REPLY;
           msg.proposedCard = num;
           
+          if (wt.playerHand.get(num).action == ActionCard.WILD ||
+              wt.playerHand.get(num).action == ActionCard.WILD_DRAW_4) {
+            System.out.println("Please input a color");
+            int cl = scnr.nextInt();
+            if (cl == 1) msg.wildColor = UNOColor.BLUE;
+            else if (cl == 2) msg.wildColor = UNOColor.GREEN;
+            else if (cl == 3) msg.wildColor = UNOColor.RED;
+            else msg.wildColor = UNOColor.YELLOW;
+          }
+          
           outputStream.writeObject(msg);
           
           System.out.println("Message sent");

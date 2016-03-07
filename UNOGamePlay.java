@@ -55,7 +55,7 @@ public class UNOGamePlay {
     }
   }
   
-  public void playATurn() {
+  public boolean playATurn() {
     System.out.println("Pile: " + pile.toString());
     
     // Get the player in turn
@@ -110,7 +110,13 @@ public class UNOGamePlay {
       }
     }
     
+    if (playerInTurn.getNumOfCard() == 0) {
+      endGame();
+      return false;
+    }
+    
     updateStatus();
+    return true;
     // Turn ends here
   }
   
@@ -142,11 +148,13 @@ public class UNOGamePlay {
       dir = !dir;
       break;
     }
-    case WILD: {
-      // TODO propose user to input a color
-      break;
-    }
     default: break;
+    }
+  }
+  
+  public void endGame() {
+    for (UNOPlayer plyr : players) {
+      plyr.broadCastResult();
     }
   }
 }

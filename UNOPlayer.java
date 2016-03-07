@@ -83,7 +83,25 @@ public class UNOPlayer {
     }
     
     System.out.println("Hand Broadcasted!");
+  }
+  
+  public void broadCastResult() {
+    UNOMessage msg = new UNOMessage();
     
+    msg.type = MessageType.RESULT;
+    if (this.getNumOfCard() == 0) {
+      msg.infoLine = "You are the Winner!";
+    } else {
+      msg.infoLine = "Sorry you lose!";
+    }
+    
+    try {
+      sock.outStream.writeObject(msg);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    System.out.println("Result Broadcasted!");
   }
   
   public void sortHand() {
