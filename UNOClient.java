@@ -17,24 +17,19 @@ public class UNOClient implements Runnable {
   private ArrayList<Integer> playerCount = new ArrayList<Integer>();
   private UNOCard pile;
   
-  public UNOClient() {
+  // Handle Graphical User Interface
+  ClientGUI myGui;
+  
+  public UNOClient(ClientGUI gui) {
     port = 8099;
+    this.myGui = gui;
   }
   
-  
-  
-  public static void main(String[] args) {
-    // TODO Auto-generated method stub
-    UNOClient ucl = new UNOClient();
-    Thread t2 = new Thread(ucl);
-    t2.start();
-
-  }
   @Override
   public void run() {
-    // TODO Auto-generated method stub
     try {
       socket = new Socket("146.148.77.57", port);
+      //socket = new Socket("localhost", port);
       outputStream = new ObjectOutputStream(socket.getOutputStream());
       inputStream = new ObjectInputStream(socket.getInputStream());
       
@@ -43,18 +38,20 @@ public class UNOClient implements Runnable {
         
         if (wt.type == MessageType.BROADCAST) {
           // update hand info
-          playerHand = wt.playerHand;
-          playerCount = wt.playerCount;
-          pile = wt.pile;
+          this.playerHand = wt.playerHand;
+          this.playerCount = wt.playerCount;
+          this.pile = wt.pile;
           
-          System.out.println("Hand info updated!");
-          System.out.println("Pile: " + wt.pile);
-          System.out.println(playerCount);
-          System.out.println(playerHand);
+          myGui.setPile(this.pile);
+          myGui.setHand(this.playerHand);
+          myGui.setCount(this.playerCount);
+          myGui.refreshGui();
+          
         } else if (wt.type == MessageType.PROPOSE) {
-          System.out.println(wt.infoLine);
-          Scanner scnr = new Scanner(System.in);
-          int num = scnr.nextInt();
+          //System.out.println(wt.infoLine);
+          //Scanner scnr = new Scanner(System.in);
+          //int num = scnr.nextInt();
+          int num = myGui.proposeIndex();
           
           UNOMessage msg = new UNOMessage();
           msg.type = MessageType.REPLY;
@@ -63,12 +60,9 @@ public class UNOClient implements Runnable {
           if (num >= 0) {
             if (playerHand.get(num).action == ActionCard.WILD ||
                 playerHand.get(num).action == ActionCard.WILD_DRAW_4) {
-              System.out.println("Please input a color");
-              int cl = scnr.nextInt();
-              if (cl == 1) msg.wildColor = UNOColor.BLUE;
-              else if (cl == 2) msg.wildColor = UNOColor.GREEN;
-              else if (cl == 3) msg.wildColor = UNOColor.RED;
-              else msg.wildColor = UNOColor.YELLOW;
+              //System.out.println("Please input a color");
+              msg.wildColor = myGui.proposeColor();
+              
             }
           }
           
@@ -76,7 +70,7 @@ public class UNOClient implements Runnable {
           
           System.out.println("Message sent");
         } else if (wt.type == MessageType.RESULT){
-          System.out.println(wt.infoLine);
+          myGui.endGame(wt.infoLine);
           break;
         }
         
@@ -88,7 +82,6 @@ public class UNOClient implements Runnable {
     } catch (IOException e) {
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     
