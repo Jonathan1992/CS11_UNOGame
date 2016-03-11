@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutY="-14.0" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Button id="start_bt" layoutX="55.0" layoutY="151.0" mnemonicParsing="false" text="Start Game">
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <TextField id="player_name" layoutX="31.0" layoutY="108.0" prefHeight="23.0" prefWidth="137.0" />
+            <Label layoutX="23.0" layoutY="78.0" text="Enter Your Name and Start" />
+            <Label layoutX="39.0" layoutY="34.0" text="Welcome to UNO">
+               <font>
+                  <Font name="Bookshelf Symbol 7" size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

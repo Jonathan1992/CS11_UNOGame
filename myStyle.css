@@ -1,0 +1,6 @@
+.count {
+    -fx-background-color: linear-gradient(to bottom right, white, yellow);
+    -fx-padding: 20px;
+    -fx-font-size: 25px;
+    -fx-background-radius: 10px;
+}

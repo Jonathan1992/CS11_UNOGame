@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane prefHeight="390.0" prefWidth="514.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane prefHeight="390.0" prefWidth="539.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="155.0" minHeight="10.0" prefHeight="127.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="186.0" minHeight="10.0" prefHeight="137.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="126.0" minHeight="10.0" prefHeight="126.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <HBox id="countBox" prefHeight="96.0" prefWidth="539.0">
+               <GridPane.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </GridPane.margin></HBox>
+            <HBox id="pileBox" alignment="TOP_CENTER" prefHeight="144.0" prefWidth="539.0" GridPane.rowIndex="1" />
+            <HBox id="handBox" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
