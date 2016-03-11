@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
@@ -23,6 +24,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class ClientGUI extends Application {
@@ -38,8 +41,13 @@ public class ClientGUI extends Application {
 	HBox pileBox = new HBox(5);
   
   ClientGUI thisGui = this;
-	
+  
+  //for proposeColor method
+  private final String[] arrayData = {"BLUE", "GREEN", "RED", "YELLOW"};
+  private List<String> dialogData;
+  
 	public void start(Stage primaryStage) {
+		/*
 	  VBox root = new VBox(10);
 	  
 	  Label lb = new Label("Welcome to UNO");
@@ -65,11 +73,10 @@ public class ClientGUI extends Application {
 	  
 	  primaryStage.setScene(scene);
 	  primaryStage.show();
-	  
-	  
-	  
-	  
+	  */
+	  //proposeColor();
 	}
+
 	
 	public void refreshGui() {
 		refreshHand();
@@ -77,10 +84,10 @@ public class ClientGUI extends Application {
 	}
 	
 	public String getFileName(UNOCard card) {
-		String col = card.color.name();
-		String act = card.action.name();
+		String col = card.color.toString();
+		String act = card.action.toString();
 		String num = Integer.toString(card.cardNumber);
-		String fileName = "/image/" + col + act + num + ".png";
+		String fileName = "image/" + col + act + num + ".png";
 		return fileName;
 	}
 	
@@ -146,7 +153,7 @@ public class ClientGUI extends Application {
 	  //Dialog<Integer> dialog = new Dialog<Integer>();
 	  //Optional<Integer> result = dialog.showAndWait();
 	  TextInputDialog dialog = new TextInputDialog("");
-	  dialog.setTitle("Enter your choice");
+	  dialog.setTitle("Enter the index of your choice");
 	  dialog.setHeaderText("Enter some text, or use default value.");
 	  Optional<String> result = dialog.showAndWait();
 	  //dialog.close();
@@ -156,15 +163,59 @@ public class ClientGUI extends Application {
 	  }
 	  
 
-	  return Integer.parseInt(entered);
+	  return Integer.parseInt(entered) - 1;  //changed to -1 
 	}
 	
+	//do not use
+	/*
 	public UNOColor proposeColor() {
 		Stage colorSelect = new Stage();
+		VBox comp = new VBox();
+		Button b = new Button("BLUE");
+		Button g = new Button("GREEN");
+		Button r = new Button("RED");
+		Button y = new Button("YELLOW");
+		comp.getChildren().add(b);
+		comp.getChildren().add(g);
+		comp.getChildren().add(r);
+		comp.getChildren().add(y);
+		Scene stageScene = new Scene(comp);
+		colorSelect.setScene(stageScene);
+		colorSelect.showAndWait();		
 		
-		while(isColor == false) {
-			setNewColor(colorSelect);   //need a better way to do this
-		}
+		b.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				color = "BLUE";
+				isColor = true;
+				colorSelect.close();
+			}
+		});
+		g.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				color = "GREEN";
+				isColor = true;
+				colorSelect.close();
+			}
+		});	
+		r.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				color = "RED";
+				isColor = true;
+				colorSelect.close();
+			}
+		});
+		y.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				color = "YELLOW";
+				isColor = true;
+				colorSelect.close();
+			}
+		});
+		
 		if(color.equals("BLUE")) 
 			return UNOColor.BLUE;
 		if(color.equals("GREEN")) 
@@ -175,63 +226,49 @@ public class ClientGUI extends Application {
 			return UNOColor.YELLOW;
 		return UNOColor.BLUE;
 	}
+	*/
 	
-	public void setNewColor(Stage colorSelect) {
-		//Popup pop = new Popup();
-		VBox comp = new VBox();
-		Button b = new Button("BLUE");
-		Button g = new Button("GREEN");
-		Button r = new Button("RED");
-		Button y = new Button("YELLOW");
-		comp.getChildren().add(b);
-		comp.getChildren().add(g);
-		comp.getChildren().add(r);
-		comp.getChildren().add(y);
+	public void getColor() {
+		dialogData = Arrays.asList(arrayData);
+		ChoiceDialog dialog;
+		dialog = new ChoiceDialog(dialogData.get(0), dialogData);
+		dialog.setTitle("New Color");
+		dialog.setHeaderText("Select a new color from this list...");
+		Optional<String> result = dialog.showAndWait();
+		//String selected = "cancelled.";
+		if(result.isPresent()) {
+			color = result.get();
+		}		
+	}
+	
+	public UNOColor setColor() {
+		getColor();	
+		UNOColor col;
+		if(color.equals("BLUE")) 
+			return col = UNOColor.BLUE;
+		if(color.equals("GREEN")) 
+			return col = UNOColor.GREEN;
+		if(color.equals("RED"))
+			return col = UNOColor.RED;		
+		if(color.equals("YELLOW"))
+			return col = UNOColor.YELLOW;
+		return null;
+	}
+	
+	public UNOColor proposeColor() {
+		UNOColor col = setColor();
+		System.out.println(color);
+		System.out.println(col);
+		return col;
 		
-		b.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				color = "BLUE";
-				isColor = true;
-				//pop.hide();
-				colorSelect.hide();
-			}
-		});
-		g.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				color = "GREEN";
-				isColor = true;
-				//pop.hide();
-				colorSelect.hide();
-			}
-		});	
-		r.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				color = "RED";
-				isColor = true;
-				//pop.hide();
-				colorSelect.hide();
-			}
-		});
-		y.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				color = "YELLOW";
-				isColor = true;
-				//pop.hide();
-				colorSelect.hide();
-			}
-		});
-		
-		Scene stageScene = new Scene(comp);
-		colorSelect.setScene(stageScene);
-		colorSelect.show();		
 	}
 	
 	public void endGame(String msg) {
-		Popup end = new Popup();
+		Alert end = new Alert(AlertType.INFORMATION);
+		end.setTitle("GAME OVER");
+		end.setHeaderText(null);
+		end.setContentText("A player has won the game.");
+		end.showAndWait();
 	}
 }
 
