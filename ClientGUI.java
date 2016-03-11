@@ -80,7 +80,7 @@ public class ClientGUI extends Application {
 		String col = card.color.name();
 		String act = card.action.name();
 		String num = Integer.toString(card.cardNumber);
-		String fileName = col + act + num;
+		String fileName = "/image/" + col + act + num + ".png";
 		return fileName;
 	}
 	
