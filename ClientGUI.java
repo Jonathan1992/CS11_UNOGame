@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -19,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.layout.HBox;
+import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -28,10 +30,12 @@ public class ClientGUI extends Application {
   private UNOCard pile;
   private ArrayList<UNOCard> hand = new ArrayList<UNOCard>();
   private ArrayList<Integer> counts = new ArrayList<Integer>();
+  String color = "";
+  boolean isColor = false;
   
 	VBox handBox = new VBox(5);
 	HBox countBox = new HBox(5);
-  HBox pileBox = new HBox(5);
+	HBox pileBox = new HBox(5);
   
   ClientGUI thisGui = this;
 	
@@ -92,9 +96,21 @@ public class ClientGUI extends Application {
 		*/
 	  handBox.getChildren().clear();
 	  for (UNOCard cd : hand) {
-	    handBox.getChildren().add(new Label(cd.toString()));
+	      //handBox.getChildren().add(new Label(cd.toString()));
+		  //handBox.getChildren().add(new ImageView(getFileName(cd)));
+		  ImageView img = new ImageView(getFileName(cd));
+		  img.addEventHandler(MouseEvent.MOUSE_CLICKED, 
+				  new EventHandler<MouseEvent>() {
+			  @Override
+			  public void handle(MouseEvent event) {
+				  //get the card index to remove from hand 
+				  //and add to pile
+			  }
+		  });
+		  handBox.getChildren().add(img);
 	  }
 	}
+	
 	
 	public void refreshPile() {
 	  countBox.getChildren().clear();
@@ -144,11 +160,78 @@ public class ClientGUI extends Application {
 	}
 	
 	public UNOColor proposeColor() {
-	  return UNOColor.BLUE;
+		Stage colorSelect = new Stage();
+		
+		while(isColor == false) {
+			setNewColor(colorSelect);   //need a better way to do this
+		}
+		if(color.equals("BLUE")) 
+			return UNOColor.BLUE;
+		if(color.equals("GREEN")) 
+			return UNOColor.GREEN;
+		if(color.equals("RED"))
+			return UNOColor.RED;		
+		if(color.equals("YELLOW"))
+			return UNOColor.YELLOW;
+		return UNOColor.BLUE;
+	}
+	
+	public void setNewColor(Stage colorSelect) {
+		//Popup pop = new Popup();
+		VBox comp = new VBox();
+		Button b = new Button("BLUE");
+		Button g = new Button("GREEN");
+		Button r = new Button("RED");
+		Button y = new Button("YELLOW");
+		comp.getChildren().add(b);
+		comp.getChildren().add(g);
+		comp.getChildren().add(r);
+		comp.getChildren().add(y);
+		
+		b.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				color = "BLUE";
+				isColor = true;
+				//pop.hide();
+				colorSelect.hide();
+			}
+		});
+		g.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				color = "GREEN";
+				isColor = true;
+				//pop.hide();
+				colorSelect.hide();
+			}
+		});	
+		r.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				color = "RED";
+				isColor = true;
+				//pop.hide();
+				colorSelect.hide();
+			}
+		});
+		y.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				color = "YELLOW";
+				isColor = true;
+				//pop.hide();
+				colorSelect.hide();
+			}
+		});
+		
+		Scene stageScene = new Scene(comp);
+		colorSelect.setScene(stageScene);
+		colorSelect.show();		
 	}
 	
 	public void endGame(String msg) {
-	  
+		Popup end = new Popup();
 	}
 }
 
