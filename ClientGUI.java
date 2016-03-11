@@ -47,7 +47,7 @@ public class ClientGUI extends Application {
   private List<String> dialogData;
   
 	public void start(Stage primaryStage) {
-		/*
+		
 	  VBox root = new VBox(10);
 	  
 	  Label lb = new Label("Welcome to UNO");
@@ -73,8 +73,7 @@ public class ClientGUI extends Application {
 	  
 	  primaryStage.setScene(scene);
 	  primaryStage.show();
-	  */
-	  //proposeColor();
+	  
 	}
 
 	
