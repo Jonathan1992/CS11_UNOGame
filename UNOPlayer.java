@@ -4,12 +4,9 @@ import java.util.*;
 public class UNOPlayer {
   ArrayList<UNOCard> hand = new ArrayList<UNOCard>();
   CardDealer dealer;
+  String nickName;
   
   UNOServer.PlayerSock sock;
-  
-  UNOPlayer(UNOServer.PlayerSock sock) {
-    this.sock = sock;
-  }
   
   public void setDealer(CardDealer dl) {
     this.dealer = dl;
@@ -20,9 +17,14 @@ public class UNOPlayer {
     sortHand();
   }
   
+  UNOPlayer(UNOServer.PlayerSock sock) {
+    this.sock = sock;
+  }
+  
   public int getNumOfCard() {
     return hand.size();
   }
+  
   
   public void addCard(UNOCard card) {
     hand.add(card);
@@ -42,6 +44,10 @@ public class UNOPlayer {
     }
   }
   
+  public String getNickName() {
+    return this.nickName;
+  }
+  
   public int proposeCard() throws IOException, ClassNotFoundException {
     // Propose the card over the network
     UNOMessage msg = new UNOMessage();
@@ -51,6 +57,11 @@ public class UNOPlayer {
     
     sock.outStream.writeObject(msg);
     rpy = (UNOMessage) sock.inStream.readObject();
+    
+    // Update player's name
+    if (!rpy.infoLine.isEmpty()) {
+      this.nickName = rpy.infoLine;
+    }
     
     int index = rpy.proposedCard;
     
@@ -63,12 +74,14 @@ public class UNOPlayer {
     return index;
   }
 
-  public void broadCastHand(UNOCard pile, ArrayList<Integer> counts) throws IOException {
+  public void broadCastHand(UNOCard pile,
+      ArrayList<Integer> counts,
+      ArrayList<String> names) throws IOException {
     UNOMessage msg = new UNOMessage();
-    msg.playerHand.addAll(hand);
     msg.pile = pile;
-    msg.playerCount = new ArrayList<Integer>();
+    msg.playerHand.addAll(hand);
     msg.playerCount.addAll(counts);
+    msg.playerName.addAll(names);
     msg.type = MessageType.BROADCAST;
     
     sock.outStream.writeObject(msg);

@@ -36,6 +36,7 @@ public class ClientGUI extends Application {
   private UNOCard pile;
   private ArrayList<UNOCard> hand = new ArrayList<UNOCard>();
   private ArrayList<Integer> counts = new ArrayList<Integer>();
+  private ArrayList<String> names = new ArrayList<String>();
   String color = "";
   boolean isColor = false;
   Integer myChoice;
@@ -67,7 +68,7 @@ public class ClientGUI extends Application {
 
       @Override
       public void handle(MouseEvent event) {
-        UNOClient client = new UNOClient(thisGui);
+        UNOClient client = new UNOClient(thisGui, "Jonathan");
         client.run();
       }
     });
@@ -117,8 +118,9 @@ public class ClientGUI extends Application {
   
   public void refreshPile() {
     countBox.getChildren().clear();
-    for (Integer it : counts) {
-      countBox.getChildren().add(new Label(it.toString()));
+    for (int i=0; i<counts.size(); i++) {
+      countBox.getChildren().add(
+          new Label(names.get(i) + ":" + counts.get(i).toString()));
     }
     if (pile != null) {
       pileBox.getChildren().clear();
@@ -146,6 +148,11 @@ public class ClientGUI extends Application {
   public void setCount(ArrayList<Integer> counts) {
     this.counts.clear();
     this.counts.addAll(counts);
+  }
+  
+  public void setNane(ArrayList<String> names) {
+    this.names.clear();
+    this.names.addAll(names);
   }
   
   public int proposeIndex() {

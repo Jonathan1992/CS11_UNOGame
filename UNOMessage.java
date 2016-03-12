@@ -9,6 +9,7 @@ public class UNOMessage implements Serializable {
   public MessageType type;
   public ArrayList<UNOCard> playerHand = new ArrayList<UNOCard>();
   public ArrayList<Integer> playerCount = new ArrayList<Integer>();
+  public ArrayList<String> playerName = new ArrayList<String>();
   public UNOCard pile;
   public String infoLine;
   public int proposedCard;

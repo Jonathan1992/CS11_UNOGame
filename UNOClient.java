@@ -15,14 +15,18 @@ public class UNOClient implements Runnable {
   
   private ArrayList<UNOCard> playerHand = new ArrayList<UNOCard>();
   private ArrayList<Integer> playerCount = new ArrayList<Integer>();
+  private ArrayList<String> playerName = new ArrayList<String>();
   private UNOCard pile;
+  
+  private String nickName;
   
   // Handle Graphical User Interface
   ClientGUI myGui;
   
-  public UNOClient(ClientGUI gui) {
+  public UNOClient(ClientGUI gui, String name) {
     port = 8099;
     this.myGui = gui;
+    this.nickName = name;
   }
   
   @Override
@@ -40,11 +44,13 @@ public class UNOClient implements Runnable {
           // update hand info
           this.playerHand = wt.playerHand;
           this.playerCount = wt.playerCount;
+          this.playerName = wt.playerName;
           this.pile = wt.pile;
           
           myGui.setPile(this.pile);
           myGui.setHand(this.playerHand);
           myGui.setCount(this.playerCount);
+          myGui.setNane(this.playerName);
           myGui.refreshGui();
           
         } else if (wt.type == MessageType.PROPOSE) {
@@ -59,6 +65,9 @@ public class UNOClient implements Runnable {
               msg.wildColor = myGui.proposeColor();
             }
           }
+          
+          // Update the name to the server
+          msg.infoLine = this.nickName;
           
           outputStream.writeObject(msg);
           

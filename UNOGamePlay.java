@@ -3,7 +3,8 @@ import java.util.*;
 
 public class UNOGamePlay {
   ArrayList<UNOPlayer> players;
-  ArrayList<Integer> playersCount;
+  ArrayList<Integer> playersCount = new ArrayList<Integer>();
+  ArrayList<String> playersName = new ArrayList<String>();
   CardDealer dealer;
   
   UNOCard pile;
@@ -18,11 +19,11 @@ public class UNOGamePlay {
   UNOGamePlay(ArrayList<UNOPlayer> plyrs) throws IOException {
     this.numOfPlayers = plyrs.size();
     this.players = plyrs;
-    this.playersCount = new ArrayList<Integer>();
     dealer = new CardDealer(3);
     for (UNOPlayer plyr : this.players) {
       plyr.setDealer(dealer);
       playersCount.add(plyr.getNumOfCard());
+      playersName.add("");
     }
     pile = dealer.drawCard();
     
@@ -125,10 +126,11 @@ public class UNOGamePlay {
     // Broadcast the changed hand information
     for (int i=0; i<players.size(); i++) {
       playersCount.set(i, players.get(i).getNumOfCard());
+      playersName.set(i, players.get(i).getNickName());
     }
     
     for (UNOPlayer plyr : players) {
-      plyr.broadCastHand(pile, playersCount);
+      plyr.broadCastHand(pile, playersCount, playersName);
     }
     
     // Check if the pile is skip
