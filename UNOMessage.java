@@ -1,6 +1,12 @@
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * This class allows the creation of game messages
+ * @author Yansong Liu, Matthew McGranahan
+ *
+ */
+
 enum MessageType {BROADCAST, PROPOSE, REPLY, RESULT}
 
 public class UNOMessage implements Serializable {
