@@ -1,21 +1,35 @@
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Class for performing the gameplay functions of UNO
+ * @author Yansong Liu, Matthew McGranahan
+ *
+ */
+
 public class UNOGamePlay {
-  ArrayList<UNOPlayer> players;
+  ArrayList<UNOPlayer> players;  //list of all players
   ArrayList<Integer> playersCount = new ArrayList<Integer>();
+  //list of the cards in each player's hands
   ArrayList<String> playersName = new ArrayList<String>();
-  CardDealer dealer;
+  //list of names of each player
+  CardDealer dealer;  //dealer used to draw cards
   
   UNOCard pile;
   int numOfPlayers;
-  boolean skip = false;
-  boolean draw = false;
-  boolean dir = true;
-  int minNumOfCardToDraw = 0;
+  boolean skip = false;  //true if next player will be skipped
+  boolean draw = false;  //true if next player has to draw cards
+  boolean dir = true;    //true for clockwise
+  int minNumOfCardToDraw = 0;  //number of cards forced to draw
   
-  int currentPlayerID = 0;
+  int currentPlayerID = 0;  //the player who's turn it is
   
+  /**
+   * Sets up the starting conditions of the game
+   * @param plyrs ArrayList<UNOPlayer> The ArrayList of players
+   * 	in the game
+   * @throws IOException If cannot find image file of a card
+   */
   UNOGamePlay(ArrayList<UNOPlayer> plyrs) throws IOException {
     this.numOfPlayers = plyrs.size();
     this.players = plyrs;
@@ -30,6 +44,11 @@ public class UNOGamePlay {
     updateStatus();
   }
   
+  /**
+   * Checks to see if a player's proposed card is valid
+   * @param card The card a player wants to play
+   * @return boolean Returns true if this card can be played
+   */
   public boolean checkCard(UNOCard card) {
     if (card.isWild()) return true;
     
@@ -40,6 +59,10 @@ public class UNOGamePlay {
     return false;
   }
   
+  /**
+   * Checks to see if a player only has one card in their hand
+   * @return boolean Returns true if a player has one card left in hand
+   */
   public boolean checkUNO() {
     for (UNOPlayer plyr : players) {
       if (plyr.getNumOfCard() <= 1) return true;
@@ -47,6 +70,11 @@ public class UNOGamePlay {
     return false;
   }
   
+  /**
+   * This gives the Player ID of the next player
+   * @return int Returns the Player ID of the next player.
+   * 
+   */
   public int nextPlayer() {
     int di = dir ? 1 : -1;
     if (skip) {
@@ -57,6 +85,13 @@ public class UNOGamePlay {
     }
   }
   
+  /**
+   * Plays one turn
+   * @return boolean Returns true if a turn was played, false if there
+   * 	was a problem
+   * @throws ClassNotFoundException
+   * @throws IOException
+   */
   public boolean playATurn() throws ClassNotFoundException, IOException {
     System.out.println("Pile: " + pile.toString());
     
@@ -122,6 +157,11 @@ public class UNOGamePlay {
     // Turn ends here
   }
   
+  /**
+   * Updates the game variables after each turn
+   * @return void
+   * @throws IOException
+   */
   public void updateStatus() throws IOException {
     // Broadcast the changed hand information
     for (int i=0; i<players.size(); i++) {
@@ -155,6 +195,11 @@ public class UNOGamePlay {
     }
   }
   
+  /**
+   * Ends the game
+   * @return void
+   * @throws IOException
+   */
   public void endGame() throws IOException {
     for (UNOPlayer plyr : players) {
       plyr.broadCastResult();
