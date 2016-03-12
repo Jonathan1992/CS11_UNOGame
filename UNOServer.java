@@ -3,6 +3,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+**
+ * Class for performing the responsibilities of a server
+ * @author Yansong Liu, Matthew McGranahan
+ *
+ */
 public class UNOServer implements Runnable {
   
   public class PlayerSock {
@@ -22,11 +27,20 @@ public class UNOServer implements Runnable {
   
   private int port;
   
+  /**
+   * Constructor
+   * @param port The int number of the port for teh server
+   * @param numOfPlayers The int number of players in the game
+   */
   public UNOServer(int port, int numOfPlayers) {
     this.port = port;
     this.numOfPlayers = numOfPlayers;
   }
   
+  /**
+   * Connects the players to the server
+   * @return ArrayList<UNOPlayer> The list of players in the game
+   */
   private ArrayList<UNOPlayer> initSocket() throws IOException {
     if (unoServerSock == null) {
       unoServerSock = new ServerSocket(port);
@@ -43,6 +57,9 @@ public class UNOServer implements Runnable {
     return retPlayer;
   }
 
+  /**
+   * Overrides the run method to play the game
+   */
   @Override
   public void run() {
     try {
@@ -56,6 +73,10 @@ public class UNOServer implements Runnable {
     }
   }
   
+  /**
+   * Creates the server and a new thread for each player
+   * @param args
+   */
   public static void main(String[] args) {
     UNOServer usr = new UNOServer(8099, 1);
     Thread t1 = new Thread(usr);
