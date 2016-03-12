@@ -7,25 +7,22 @@ public class UNOPlayer {
   
   UNOServer.PlayerSock sock;
   
+  UNOPlayer(UNOServer.PlayerSock sock) {
+    this.sock = sock;
+  }
+  
   public void setDealer(CardDealer dl) {
     this.dealer = dl;
-    
     // Draw 8 cards
     for (int i=0; i<8; i++) {
       hand.add(dealer.drawCard());
     }
-    
     sortHand();
-  }
-  
-  UNOPlayer(UNOServer.PlayerSock sock) {
-    this.sock = sock;
   }
   
   public int getNumOfCard() {
     return hand.size();
   }
-  
   
   public void addCard(UNOCard card) {
     hand.add(card);
