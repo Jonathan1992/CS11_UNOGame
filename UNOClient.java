@@ -67,7 +67,7 @@ public class UNOClient implements Runnable {
           myGui.setPile(this.pile);
           myGui.setHand(this.playerHand);
           myGui.setCount(this.playerCount);
-          myGui.setNane(this.playerName);
+          myGui.setName(this.playerName);
           myGui.refreshGui();
           
         } else if (wt.type == MessageType.PROPOSE) {
