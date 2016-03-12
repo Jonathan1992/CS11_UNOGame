@@ -97,13 +97,7 @@ public class UNOClient implements Runnable {
         }
         
       }
-    } catch (SocketException se) {
-      se.printStackTrace();
-    } catch (UnknownHostException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ClassNotFoundException e) {
+    } catch (IOException | ClassNotFoundException e) {
       e.printStackTrace();
     }
   }
