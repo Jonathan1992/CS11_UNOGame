@@ -20,9 +20,6 @@ public class UNOServer implements Runnable {
   private ServerSocket unoServerSock;
   private int numOfPlayers;
   
-  private ArrayList<PlayerSock> playerSockets = new ArrayList<PlayerSock>();
-  private ArrayList<UNOPlayer> players = new ArrayList<UNOPlayer>();
-  
   private int port;
   
   public UNOServer(int port, int numOfPlayers) {
@@ -30,27 +27,29 @@ public class UNOServer implements Runnable {
     this.numOfPlayers = numOfPlayers;
   }
   
-  private void initSocket() {
-    try {
+  private ArrayList<UNOPlayer> initSocket() throws IOException {
+    if (unoServerSock == null) {
       unoServerSock = new ServerSocket(port);
-      for (int i=0; i<numOfPlayers; i++) {
-        System.out.println("Waiting for Player " + (i+1) + "...");
-        PlayerSock ps = new PlayerSock(unoServerSock.accept());
-        System.out.println("Player " + (i+1) + " is online!");
-        playerSockets.add(ps);
-        players.add(new UNOPlayer(ps));
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } 
+    }
+    
+    ArrayList<UNOPlayer> retPlayer = new ArrayList<UNOPlayer>();
+    for (int i=0; i<numOfPlayers; i++) {
+      System.out.println("Waiting for Player " + (i+1) + "...");
+      PlayerSock ps = new PlayerSock(unoServerSock.accept());
+      System.out.println("Player " + (i+1) + " is online!");
+      retPlayer.add(new UNOPlayer(ps));
+    }
+    
+    return retPlayer;
   }
 
   @Override
   public void run() {
-    initSocket();
-    
     try {
-      UNOGamePlay test = new UNOGamePlay(players);
+      ArrayList<UNOPlayer> plyrs = initSocket();
+      Thread t = new Thread(this);
+      t.start();
+      UNOGamePlay test = new UNOGamePlay(plyrs);
       while (test.playATurn()) {}
     } catch (ClassNotFoundException | IOException e) {
       e.printStackTrace();
