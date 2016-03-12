@@ -1,9 +1,7 @@
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -13,19 +11,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.image.Image;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import javafx.scene.layout.HBox;
-import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,19 +33,20 @@ import java.util.Optional;
 public class ClientGUI extends Application {
 
   private UNOCard pile;  //last card played
-  private ArrayList<UNOCard> hand = new ArrayList<UNOCard>();
   //hand of the player
-  private ArrayList<Integer> counts = new ArrayList<Integer>();
+  private ArrayList<UNOCard> hand = new ArrayList<UNOCard>();
   //index of each card in the hand
+  private ArrayList<Integer> counts = new ArrayList<Integer>();
   private ArrayList<String> names = new ArrayList<String>();
-  String color = ""; //variables for changing color
+  String color = "";
   boolean isColor = false;
-  Integer myChoice;  //index of card to play
-  int tmpChoice;
+  Integer myChoice;
   
-  HBox handBox = new HBox(5);   //hand
-  HBox countBox = new HBox(5);  //index of cards in hand
-  HBox pileBox = new HBox(5);   //last card played
+  HBox countBox;
+  HBox pileBox;
+  HBox handBox;
+  
+  Scene gameScene;
   
   ClientGUI thisGui = this;
   
@@ -64,34 +58,47 @@ public class ClientGUI extends Application {
    * Creates and displays the GUI
    * @return void Displays GUI
    */
-  public void start(Stage primaryStage) {
+  public void start(Stage primaryStage) throws IOException {
     
-    VBox root = new VBox(10);
+    primaryStage.setTitle("Online UNO");
     
-    Label lb = new Label("Welcome to UNO");
-    Button bt = new Button("Start");
+    Parent startRoot = FXMLLoader.load(getClass().getResource("StartScene.fxml"));
     
-    hand.add(new UNOCard(UNOColor.BLUE, ActionCard.REVERSE, 0));
-    pile = new UNOCard(UNOColor.BLUE, ActionCard.REVERSE, 0);
-    //first card played
+    Button start_bt = (Button) startRoot.lookup("#start_bt");
+    TextField name_fd = (TextField) startRoot.lookup("#player_name");
     
-    refreshGui();
-    
-    bt.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
+    start_bt.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
-        UNOClient client = new UNOClient(thisGui, "Jonathan");
-        client.run();   //starts game
+        UNOClient client = new UNOClient(thisGui, name_fd.getText());
+        try {
+          initGame();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        primaryStage.setScene(gameScene);
+        client.run();
       }
     });
     
-    root.getChildren().addAll(lb, bt, countBox, pileBox, handBox);
+    Scene startScene = new Scene(startRoot);
     
-    Scene scene = new Scene(root, 800, 600);
-    
-    primaryStage.setScene(scene);
+    primaryStage.setScene(startScene);
     primaryStage.show();
+  }
+  
+  private void initGame() throws IOException {
+    Parent gameRoot = FXMLLoader.load(getClass().getResource("GameScene.fxml"));
+    
+    countBox = (HBox) gameRoot.lookup("#countBox");
+    pileBox = (HBox) gameRoot.lookup("#pileBox");
+    handBox = (HBox) gameRoot.lookup("#handBox");
+    
+    gameScene = new Scene(gameRoot);
+    
+    gameScene.getStylesheets().add("myStyle.css");
+    
+    refreshGui();
   }
 
   /**
@@ -100,65 +107,64 @@ public class ClientGUI extends Application {
    */
   public void refreshGui() {
     refreshHand();
-    refreshPile();
+    refreshCount();
   }
   
   /**
    * Takes the unique attributes of each UNO card
-   * 	and creates a unique filename based on that card
+   *  and creates a unique filename based on that card
    * @param card The UNOCard that you want to display
    * @return String the filename corresponding to the card
    */
   public String getFileName(UNOCard card) {
     String col;
-    if (card.isWild()) {  //wild cards have no color
+    if (card.isWild()) {
       col = "";
     } else {
-      col = card.color.toString();                  //gets color
+      col = card.color.toString();
     }
-    String act = card.action.toString();            //gets type
-    String num = Integer.toString(card.cardNumber); //gets number
-    String fileName = "image/" + col + act + num + ".png";
+    String act = card.action.toString();
+    String num = Integer.toString(card.cardNumber);
+    String fileName = "" + col + act + num + ".png";
     return fileName;
   }
   
-   /**
+  /**
    * Resets the hand if a card has been added of removed
    * @return void Updates hand
    */
   public void refreshHand() {
-    handBox.getChildren().clear();  //removes images of cards
-    for (UNOCard cd : hand) {       //new images for each card in hand
+    // Refresh Pile
+    if (pile != null) {
+      pileBox.getChildren().clear();
+      ImageView img = new ImageView(getFileName(pile));
+      pileBox.getChildren().add(img);
+      if (pile.isWild()) {
+        pileBox.getChildren().add(new Label(pile.color.toString()));
+      }
+    }
+    
+    // Refresh Player's hand
+    handBox.getChildren().clear();
+    for (UNOCard cd : hand) {
       ImageView img = new ImageView(getFileName(cd));
-      img.addEventHandler(MouseEvent.MOUSE_CLICKED, 
-          new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-          //get the card index to remove from hand 
-          //and add to pile
-        }
-      });
-      handBox.getChildren().add(img);  //adds card images back to GUI
+      handBox.getChildren().add(img);
     }
   }
   
   /**
-   * Updates the last card played by any player
+   * Updates the counts and name for all players
    * @return void Updates GUI
    */
-  public void refreshPile() {
+  public void refreshCount() {
     countBox.getChildren().clear();
     for (int i=0; i<counts.size(); i++) {
-      countBox.getChildren().add(
-          new Label(names.get(i) + ":" + counts.get(i).toString()));
-          //adds new card if there is none
-    }
-    if (pile != null) {  //replaces old card
-      pileBox.getChildren().clear();
-      pileBox.getChildren().add(new Label(pile.toString()));
-      if (pile.isWild()) {  //displays color of wild card played
-        pileBox.getChildren().add(new Label(pile.color.toString()));
-      }
+      VBox ct = new VBox(10);
+      ct.getChildren().add(new Label(names.get(i)));
+      ct.getChildren().add(new Label(counts.get(i).toString()));
+      ct.getStyleClass().add("count");
+      ct.setMaxHeight(30);
+      countBox.getChildren().add(ct);
     }
   }
   
@@ -205,7 +211,7 @@ public class ClientGUI extends Application {
    * Sets the name of each player
    * @param names The ArrayList<String> of the player names
    */
-  public void setNane(ArrayList<String> names) {
+  public void setName(ArrayList<String> names) {
     this.names.clear();
     this.names.addAll(names);
   }
@@ -231,24 +237,23 @@ public class ClientGUI extends Application {
         lb.setText("Current: Draw Card");
       }
     });
-    root.getChildren().add(drawBt);  //adds drawn card
+    root.getChildren().add(drawBt);
     
-    for (int i=0; i<hand.size(); i++) {  //for each card in hand
-      tmpChoice = i;
+    for (int i=0; i<hand.size(); i++) {
       ImageView img = new ImageView(getFileName(hand.get(i)));
-      img.setId(""+i);
+      img.setId("" + i);
       img.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
           myChoice = Integer.parseInt(img.getId());
           lb.setText("Current: " + myChoice);
-          //shows the index of card you want to play on the GUI
         }
       });
       root.getChildren().add(img);
     }
     
     dialog.getDialogPane().setContent(vroot);
+    dialog.setTitle("Please Select your Card to Play");
     
     // Button
     ButtonType buttonTypeOk = new ButtonType("Send", ButtonData.OK_DONE);
@@ -266,62 +271,6 @@ public class ClientGUI extends Application {
   }
   
   /**
-   * Gets the index of the card you wants to play.
-   * This Version of the method is a prototype for a CLI
-   * @return int Index of the card to be played
-   */
-  public int proposeIndex2() {
-    //Dialog<Integer> dialog = new Dialog<Integer>();
-    //Optional<Integer> result = dialog.showAndWait();
-    TextInputDialog dialog = new TextInputDialog("");
-    dialog.setTitle("Enter the index of your choice");
-    dialog.setHeaderText("Enter some text, or use default value.");
-    Optional<String> result = dialog.showAndWait();
-    String entered = "0";
-    if (result.isPresent()) {
-        entered = result.get();
-    }
-    
-    return Integer.parseInt(entered) - 1;  //changed to -1 
-  }
-  
-  /**
-   * Sets the String color to the color chosen by the user in
-   * a Dialog box
-   * @return void Sets the String color;
-   */
-  public void getColor() {
-    dialogData = Arrays.asList(arrayData);
-    ChoiceDialog dialog;
-    dialog = new ChoiceDialog(dialogData.get(0), dialogData);
-    dialog.setTitle("New Color");
-    dialog.setHeaderText("Select a new color from this list...");
-    Optional<String> result = dialog.showAndWait();
-    //String selected = "cancelled.";
-    if(result.isPresent()) {
-      color = result.get();  //player selects one of the colors
-    }   
-  }
-  
-  /**
-   * Turns the String color into a UNOColor enum
-   * @return UNOColor The new color of the Wild card
-   */
-  public UNOColor setColor() {
-    getColor(); 
-    UNOColor col;
-    if(color.equals("BLUE")) 
-      return col = UNOColor.BLUE;
-    if(color.equals("GREEN")) 
-      return col = UNOColor.GREEN;
-    if(color.equals("RED"))
-      return col = UNOColor.RED;    
-    if(color.equals("YELLOW"))
-      return col = UNOColor.YELLOW;
-    return null;
-  }
-  
-  /**
    * Gets the new color of a Wild Card 
    * and keeps track of color changes.
    * This method is called by other classes.
@@ -329,11 +278,19 @@ public class ClientGUI extends Application {
    * and prints this value
    */
   public UNOColor proposeColor() {
-    UNOColor col = setColor();
-    System.out.println(color);
-    System.out.println(col);
-    return col;
+    dialogData = Arrays.asList(arrayData);
+    ChoiceDialog<String> dialog =
+        new ChoiceDialog<String>(dialogData.get(0), dialogData);
+    dialog.setTitle("New Color");
+    dialog.setHeaderText("Select a new color from this list...");
+    Optional<String> result = dialog.showAndWait();
     
+    switch (result.get()) {
+    case "BLUE": return UNOColor.BLUE;
+    case "GREEN": return UNOColor.GREEN;
+    case "RED": return UNOColor.RED;
+    default: return UNOColor.YELLOW;
+    }
   }
   
   /**
