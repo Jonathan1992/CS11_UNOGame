@@ -97,7 +97,7 @@ public class UNOGamePlay {
           boolean playable = checkCard(drawedCard);
           
           // If this card can be played
-          if (playable) {
+          if (playable && !drawedCard.isWild()) {
             // play this card, update the pile
             dealer.addBack(pile);
             pile = drawedCard;
