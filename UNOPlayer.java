@@ -58,8 +58,7 @@ public class UNOPlayer {
     int index = rpy.proposedCard;
     
     if (index >= 0) {
-      if (hand.get(index).action == ActionCard.WILD ||
-          hand.get(index).action == ActionCard.WILD_DRAW_4) {
+      if (hand.get(index).isWild()) {
         hand.get(index).color = rpy.wildColor;
       }
     }

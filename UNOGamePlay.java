@@ -30,8 +30,7 @@ public class UNOGamePlay {
   }
   
   public boolean checkCard(UNOCard card) {
-    if (card.action == ActionCard.WILD ||
-        card.action == ActionCard.WILD_DRAW_4) return true;
+    if (card.isWild()) return true;
     
     if (card.color == pile.color) return true;
     
@@ -63,8 +62,6 @@ public class UNOGamePlay {
     // Get the player in turn
     currentPlayerID = this.nextPlayer();
     UNOPlayer playerInTurn = players.get(currentPlayerID);
-    
-    //System.out.println("Player " + (currentPlayerID+1) + "'s turn");
     
     // Check whether is player is force to draw card
     if (minNumOfCardToDraw > 0) {

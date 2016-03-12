@@ -1,13 +1,11 @@
 import java.io.Serializable;
 
-enum UNOColor {YELLOW, RED, GREEN, BLUE, BLACK}
+enum UNOColor {YELLOW, RED, GREEN, BLUE}
 
 enum ActionCard {WILD_DRAW_4, WILD, DRAW_2, SKIP, REVERSE, NONE}
 
 public class UNOCard implements Comparable<UNOCard>, Serializable {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = 1L;
   public UNOColor color;
   public ActionCard action;
@@ -17,6 +15,10 @@ public class UNOCard implements Comparable<UNOCard>, Serializable {
     this.color = color;
     this.action = action;
     this.cardNumber = number;
+  }
+  
+  public boolean isWild() {
+    return action == ActionCard.WILD || action == ActionCard.WILD_DRAW_4;
   }
 
   @Override
@@ -38,12 +40,8 @@ public class UNOCard implements Comparable<UNOCard>, Serializable {
   
   @Override
   public String toString() {
-    if (action == ActionCard.WILD || action == ActionCard.WILD_DRAW_4) {
-      if (color == UNOColor.BLACK) {
-        return action.toString();
-      } else {
-        return action.toString() + "-" + color.toString();
-      }
+    if (isWild()) {
+      return action.toString();
     } else if (action != ActionCard.NONE) {
       return color.toString() + "-" + action.toString();
     } else {

@@ -8,7 +8,6 @@ public class CardDealer {
     
     for (int i=0; i<numOfDecks; i++) {
       for (UNOColor cl : UNOColor.values()) {
-        if (cl == UNOColor.BLACK) continue;
         for (int j=0; j<10; j++) {
           cardStack.add(new UNOCard(cl, ActionCard.NONE, j));
         }
@@ -16,8 +15,8 @@ public class CardDealer {
         cardStack.add(new UNOCard(cl, ActionCard.REVERSE, 0));
         cardStack.add(new UNOCard(cl, ActionCard.WILD, 0));
       }
-      cardStack.add(new UNOCard(UNOColor.BLACK, ActionCard.WILD_DRAW_4, 0));
-      cardStack.add(new UNOCard(UNOColor.BLACK, ActionCard.WILD, 0));
+      cardStack.add(new UNOCard(UNOColor.BLUE, ActionCard.WILD_DRAW_4, 0));
+      cardStack.add(new UNOCard(UNOColor.BLUE, ActionCard.WILD, 0));
     }
     
     Collections.shuffle(cardStack);

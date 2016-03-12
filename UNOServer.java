@@ -58,7 +58,7 @@ public class UNOServer implements Runnable {
   }
   
   public static void main(String[] args) {
-    UNOServer usr = new UNOServer(8099, 2);
+    UNOServer usr = new UNOServer(8099, 1);
     Thread t1 = new Thread(usr);
     t1.start();
   }

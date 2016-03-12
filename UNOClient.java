@@ -28,8 +28,8 @@ public class UNOClient implements Runnable {
   @Override
   public void run() {
     try {
-      socket = new Socket("146.148.77.57", port);
-      //socket = new Socket("localhost", port);
+      //socket = new Socket("146.148.77.57", port);
+      socket = new Socket("localhost", port);
       outputStream = new ObjectOutputStream(socket.getOutputStream());
       inputStream = new ObjectInputStream(socket.getInputStream());
       
@@ -48,9 +48,6 @@ public class UNOClient implements Runnable {
           myGui.refreshGui();
           
         } else if (wt.type == MessageType.PROPOSE) {
-          //System.out.println(wt.infoLine);
-          //Scanner scnr = new Scanner(System.in);
-          //int num = scnr.nextInt();
           int num = myGui.proposeIndex();
           
           UNOMessage msg = new UNOMessage();
@@ -58,11 +55,8 @@ public class UNOClient implements Runnable {
           msg.proposedCard = num;
           
           if (num >= 0) {
-            if (playerHand.get(num).action == ActionCard.WILD ||
-                playerHand.get(num).action == ActionCard.WILD_DRAW_4) {
-              //System.out.println("Please input a color");
+            if (playerHand.get(num).isWild()) {
               msg.wildColor = myGui.proposeColor();
-              
             }
           }
           
@@ -84,7 +78,5 @@ public class UNOClient implements Runnable {
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
-    
   }
-
 }
