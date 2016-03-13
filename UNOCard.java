@@ -19,7 +19,7 @@ public class UNOCard implements Comparable<UNOCard>, Serializable {
   public int cardNumber;
   
   /**
-   * Constructor for an UNO card
+   * Constructor for an UNO Card
    * @param color UNOColor enum for the color
    * @param action ActionCard enum for the types of cards
    * @param number int The number of the UNO card
@@ -28,6 +28,16 @@ public class UNOCard implements Comparable<UNOCard>, Serializable {
     this.color = color;
     this.action = action;
     this.cardNumber = number;
+  }
+  
+  /**
+   * Copy Constructor for an UNO Card
+   * @param another UNO Card
+   */
+  UNOCard(UNOCard cd) {
+    this.color = cd.color;
+    this.action = cd.action;
+    this.cardNumber = cd.cardNumber;
   }
   
   /**
