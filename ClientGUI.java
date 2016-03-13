@@ -140,15 +140,20 @@ public class ClientGUI extends Application {
       ImageView img = new ImageView(getFileName(pile));
       pileBox.getChildren().add(img);
       if (pile.isWild()) {
-        pileBox.getChildren().add(new Label(pile.color.toString()));
+        Label lb = new Label(pile.color.toString());
+        lb.getStyleClass().add("count");
+        pileBox.getChildren().add(lb);
       }
     }
     
     // Refresh Player's hand
     handBox.getChildren().clear();
+    double overlap = 0;
     for (UNOCard cd : hand) {
       ImageView img = new ImageView(getFileName(cd));
       handBox.getChildren().add(img);
+      img.setTranslateX(-overlap);
+      overlap += 40;
     }
   }
   
@@ -162,7 +167,10 @@ public class ClientGUI extends Application {
       VBox ct = new VBox(10);
       ct.getChildren().add(new Label(names.get(i)));
       ct.getChildren().add(new Label(counts.get(i).toString()));
+      ct.getChildren().add(new Label("cards left"));
       ct.getStyleClass().add("count");
+      ct.getChildren().get(0).setId("small");
+      ct.getChildren().get(2).setId("small");
       ct.setMaxHeight(30);
       countBox.getChildren().add(ct);
     }
@@ -225,19 +233,20 @@ public class ClientGUI extends Application {
     Dialog<Integer> dialog = new Dialog<>();
     VBox vroot = new VBox(10);
     HBox root = new HBox(5);
-    Label lb = new Label();
     
-    vroot.getChildren().addAll(root, lb);
+    vroot.getChildren().addAll(root);
     
-    Button drawBt = new Button("Draw Card");
-    drawBt.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    ImageView drawImg = new ImageView("NEWCARD.png");
+    drawImg.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
+        root.getChildren().get(myChoice+1).setTranslateY(0);
         myChoice = -1;
-        lb.setText("Current: Draw Card");
+        root.getChildren().get(myChoice+1).setTranslateY(20);
       }
     });
-    root.getChildren().add(drawBt);
+    
+    root.getChildren().add(drawImg);
     
     for (int i=0; i<hand.size(); i++) {
       ImageView img = new ImageView(getFileName(hand.get(i)));
@@ -245,8 +254,9 @@ public class ClientGUI extends Application {
       img.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
+          root.getChildren().get(myChoice+1).setTranslateY(0);
           myChoice = Integer.parseInt(img.getId());
-          lb.setText("Current: " + myChoice);
+          root.getChildren().get(myChoice+1).setTranslateY(20);
         }
       });
       root.getChildren().add(img);
@@ -256,7 +266,7 @@ public class ClientGUI extends Application {
     dialog.setTitle("Please Select your Card to Play");
     
     // Button
-    ButtonType buttonTypeOk = new ButtonType("Send", ButtonData.OK_DONE);
+    ButtonType buttonTypeOk = new ButtonType("Play this Card", ButtonData.OK_DONE);
     dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
     
     dialog.setResultConverter(new Callback<ButtonType, Integer>() {
