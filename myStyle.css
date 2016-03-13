@@ -1,6 +1,12 @@
 .count {
-    -fx-background-color: linear-gradient(to bottom right, white, yellow);
-    -fx-padding: 20px;
+    -fx-background-color: linear-gradient(to bottom right, white, aqua);
+    -fx-font-family: "Tahoma";
+    -fx-text-alignment: center;
+    -fx-padding: 10px;
     -fx-font-size: 25px;
     -fx-background-radius: 10px;
+}
+
+#small {
+	-fx-font-size: 15px;
 }
