@@ -3,13 +3,26 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+/**
+ * This class is for implementing the UNO Server
+ * It's multithreaded supporting many groups of players
+ * @author Yansong Liu, Matthew McGranahan
+ */
 public class UNOServer implements Runnable {
   
+  /**
+   * This class is for packaging the player sockets
+   * @author Yansong Liu, Matthew McGranahan
+   */
   public class PlayerSock {
     public Socket socket;
     public ObjectInputStream inStream;
     public ObjectOutputStream outStream;
     
+    /**
+     * Constructor for Players socket
+     * @param sock a socket accepted
+     */
     public PlayerSock(Socket sock) throws IOException {
       this.socket = sock;
       inStream = new ObjectInputStream(socket.getInputStream());
@@ -22,11 +35,20 @@ public class UNOServer implements Runnable {
   
   private int port;
   
+  /**
+   * Constructor for UNOServer
+   * @param port port to listen for connecting
+   * @param numOfPlayers number of players supported
+   */
   public UNOServer(int port, int numOfPlayers) {
     this.port = port;
     this.numOfPlayers = numOfPlayers;
   }
   
+  /**
+   * Initialize the socket
+   * @return ArrayList<UNOPlayer> a list of connected players
+   */
   private ArrayList<UNOPlayer> initSocket() throws IOException {
     if (unoServerSock == null) {
       unoServerSock = new ServerSocket(port);
