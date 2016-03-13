@@ -87,5 +87,4 @@ public class UNOCard implements Comparable<UNOCard>, Serializable {
       return color.toString() + "-" + cardNumber;
     }
   }
-  
 }
