@@ -29,7 +29,6 @@ import java.util.Optional;
  * 
  * @author Yansong Liu, Matthew McGranahan
  */
-
 public class ClientGUI extends Application {
 
   private UNOCard pile;  //last card played
@@ -46,8 +45,10 @@ public class ClientGUI extends Application {
   HBox pileBox;
   HBox handBox;
   
+  // Main Scene for the game
   Scene gameScene;
   
+  // A reference to this object for the UNOClient to run
   ClientGUI thisGui = this;
   
   //for proposeColor method
@@ -87,6 +88,10 @@ public class ClientGUI extends Application {
     primaryStage.show();
   }
   
+  /**
+   * Initialize the game when user click start
+   * Refresh the game panel
+   */
   private void initGame() throws IOException {
     Parent gameRoot = FXMLLoader.load(getClass().getResource("GameScene.fxml"));
     
@@ -148,6 +153,7 @@ public class ClientGUI extends Application {
     
     // Refresh Player's hand
     handBox.getChildren().clear();
+    // Create overlay for the hand of cards
     double overlap = 0;
     for (UNOCard cd : hand) {
       ImageView img = new ImageView(getFileName(cd));
